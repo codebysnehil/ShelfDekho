@@ -2,7 +2,7 @@
 
 **Retail analytics with promo- and festival-aware demand forecasting, stock-out alerts and an AI analyst that answers business questions with SQL.**
 
-**[Live demo](https://shelfdekho.vercel.app)** · [API docs](https://shelfiq-api.onrender.com/docs) · no sign-up, one click
+**[Live demo](https://shelfdekho.vercel.app)** · [API docs](https://shelfdekho-api.onrender.com/docs) · no sign-up, one click
 
 > The API runs on a free tier that sleeps when idle. The first visit can take up to a minute while it wakes; the app shows a banner while it does.
 

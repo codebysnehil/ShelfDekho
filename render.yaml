@@ -2,7 +2,7 @@
 # Render: New > Blueprint > pick this repo, then fill in the "sync: false" values.
 services:
   - type: web
-    name: shelfiq-api
+    name: shelfdekho-api
     runtime: docker
     rootDir: backend
     plan: free
@@ -18,9 +18,9 @@ services:
         sync: false
       - key: JWT_SECRET
         generateValue: true
-      - key: CORS_ORIGINS # your Vercel URL, e.g. https://shelfiq.vercel.app
+      - key: CORS_ORIGINS # your Vercel URL, e.g. https://shelfdekho.vercel.app
         sync: false
-      - key: CORS_ORIGIN_REGEX # optional, e.g. https://shelfiq-.*\.vercel\.app
+      - key: CORS_ORIGIN_REGEX # optional, e.g. https://shelfdekho-.*\.vercel\.app
         sync: false
       - key: DATA_WRITES_ENABLED # the public demo keeps one set of figures
         value: "false"

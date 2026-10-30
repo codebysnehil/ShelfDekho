@@ -29,7 +29,7 @@ async def lifespan(_: FastAPI):
 def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
-        title="ShelfIQ API",
+        title="ShelfDekho API",
         version=__version__,
         description="Retail analytics, demand forecasting and an AI SQL analyst.",
         lifespan=lifespan,

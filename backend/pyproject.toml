@@ -1,7 +1,7 @@
 [project]
 name = "shelfiq-backend"
 version = "0.1.0"
-description = "ShelfIQ retail analytics API: sales insights, demand forecasting and an AI SQL analyst"
+description = "ShelfDekho retail analytics API: sales insights, demand forecasting and an AI SQL analyst"
 readme = "../README.md"
 requires-python = ">=3.11"
 dependencies = [

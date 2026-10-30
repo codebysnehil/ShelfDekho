@@ -178,7 +178,7 @@ def cache_key(question: str) -> str:
 
 def sql_system_prompt(data_start: dt.date, data_end: dt.date) -> str:
     diwali = ", ".join(d.isoformat() for d in DIWALI)
-    return f"""You are ShelfIQ's analytics assistant for a grocery and general-merchandise \
+    return f"""You are ShelfDekho's analytics assistant for a grocery and general-merchandise \
 retail chain in India. Translate the user's question into ONE PostgreSQL SELECT query.
 
 Schema:

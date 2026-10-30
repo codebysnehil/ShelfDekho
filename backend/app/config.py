@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     jwt_secret: str = "dev-only-secret-change-me-in-production"
     jwt_ttl_hours: int = 24
     cors_origins: str = "http://localhost:3000"
-    # e.g. https://shelfiq-.*\.vercel\.app to allow Vercel preview deployments
+    # e.g. https://shelfdekho-.*\.vercel\.app to allow Vercel preview deployments
     cors_origin_regex: str | None = None
 
     # LLM providers are tried in this order: Groq, then Gemini. Both expose

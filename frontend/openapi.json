@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "ShelfIQ API",
+    "title": "ShelfDekho API",
     "description": "Retail analytics, demand forecasting and an AI SQL analyst.",
     "version": "0.1.0"
   },
