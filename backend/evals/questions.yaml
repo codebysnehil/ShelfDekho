@@ -1,0 +1,80 @@
+# Eval set for the AI analyst's text-to-SQL step.
+# Each case pairs a question with a reference query. A generated query passes when its
+# result contains every number in the reference result (execution accuracy; column
+# names and extra columns do not matter).
+- question: How many stores are there in each region?
+  sql: SELECT region, COUNT(*) FROM stores GROUP BY region
+
+- question: What was total revenue in September 2026?
+  sql: >
+    SELECT ROUND(SUM(revenue)) FROM daily_sales
+    WHERE sale_date BETWEEN DATE '2026-09-01' AND DATE '2026-09-30'
+
+- question: Which category had the highest gross margin percentage in the last 90 days?
+  sql: >
+    SELECT p.category,
+      ROUND(100.0 * (SUM(ds.revenue) - SUM(ds.cost)) / SUM(ds.revenue), 1)
+    FROM daily_sales ds JOIN products p ON p.id = ds.product_id
+    WHERE ds.sale_date > (SELECT MAX(sale_date) FROM daily_sales) - 90
+    GROUP BY p.category ORDER BY 2 DESC LIMIT 1
+
+- question: Top 5 products by units sold in 2025
+  sql: >
+    SELECT p.name, SUM(ds.units) FROM daily_sales ds JOIN products p ON p.id = ds.product_id
+    WHERE ds.sale_date BETWEEN DATE '2025-01-01' AND DATE '2025-12-31'
+    GROUP BY p.name ORDER BY 2 DESC LIMIT 5
+
+- question: What is the monthly revenue for the Baner store in 2026?
+  sql: >
+    SELECT date_trunc('month', ds.sale_date)::date, ROUND(SUM(ds.revenue))
+    FROM daily_sales ds JOIN stores s ON s.id = ds.store_id
+    WHERE s.name = 'Baner' AND ds.sale_date >= DATE '2026-01-01'
+    GROUP BY 1 ORDER BY 1
+
+- question: How many days did Cola 2L have zero sales in Mumbai Andheri in 2026?
+  sql: >
+    SELECT COUNT(*) FROM daily_sales ds
+    JOIN stores s ON s.id = ds.store_id JOIN products p ON p.id = ds.product_id
+    WHERE s.name = 'Andheri' AND p.name = 'Cola 2L' AND ds.units = 0
+      AND ds.sale_date >= DATE '2026-01-01'
+
+- question: Which store sold the most units of Toned Milk 1L in the last 28 days?
+  sql: >
+    SELECT s.name, SUM(ds.units) FROM daily_sales ds
+    JOIN stores s ON s.id = ds.store_id JOIN products p ON p.id = ds.product_id
+    WHERE p.name = 'Toned Milk 1L'
+      AND ds.sale_date > (SELECT MAX(sale_date) FROM daily_sales) - 28
+    GROUP BY s.name ORDER BY 2 DESC LIMIT 1
+
+- question: What share of Snacks & Beverages revenue came from promotions in 2025?
+  sql: >
+    SELECT ROUND(100.0 * SUM(ds.revenue) FILTER (WHERE ds.promo_discount > 0)
+      / SUM(ds.revenue), 1)
+    FROM daily_sales ds JOIN products p ON p.id = ds.product_id
+    WHERE p.category = 'Snacks & Beverages'
+      AND ds.sale_date BETWEEN DATE '2025-01-01' AND DATE '2025-12-31'
+
+- question: How many promotions are planned to start after the last sales date?
+  sql: >
+    SELECT COUNT(*) FROM promotions
+    WHERE start_date > (SELECT MAX(sale_date) FROM daily_sales)
+
+- question: Total forecast units for next week across all stores, by category
+  sql: >
+    SELECT p.category, ROUND(SUM(f.units)::numeric) FROM forecasts f
+    JOIN products p ON p.id = f.product_id
+    WHERE f.week_start = (SELECT MIN(week_start) FROM forecasts)
+    GROUP BY p.category ORDER BY 2 DESC
+
+- question: Which 3 store and product combinations have the least stock on hand?
+  sql: >
+    SELECT s.name, p.name, i.on_hand FROM inventory i
+    JOIN stores s ON s.id = i.store_id JOIN products p ON p.id = i.product_id
+    ORDER BY i.on_hand ASC, s.name, p.name LIMIT 3
+
+- question: Average daily revenue per store format in the last 90 days
+  sql: >
+    SELECT s.format, ROUND(SUM(ds.revenue) / COUNT(DISTINCT (ds.sale_date, s.id)))
+    FROM daily_sales ds JOIN stores s ON s.id = ds.store_id
+    WHERE ds.sale_date > (SELECT MAX(sale_date) FROM daily_sales) - 90
+    GROUP BY s.format ORDER BY 2 DESC
