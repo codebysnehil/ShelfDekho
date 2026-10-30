@@ -96,7 +96,7 @@ function Hero() {
 
       <header className="flex items-center justify-between gap-3 px-4 pt-4 md:px-8 md:pt-5">
         <Link href="/" className="flex items-center gap-2 text-[20px] font-semibold tracking-[-0.01em]">
-          <ShelfMark size={24} /> ShelfIQ
+          <ShelfMark size={24} /> ShelfDekho
         </Link>
         <nav className="flex items-center gap-1 text-[16px] sm:gap-5">
           <a href="#shelves" className="hidden hover:underline sm:inline">
@@ -119,7 +119,7 @@ function Hero() {
           before it does.
         </h1>
         <p className={clsx(LEAD, "mt-6 max-w-[52ch]")}>
-          ShelfIQ tells a grocery chain what sold, what will sell and what to reorder today, in every store, before the
+          ShelfDekho tells a grocery chain what sold, what will sell and what to reorder today, in every store, before the
           shelf is empty.
         </p>
         <DemoButton className="mt-7" />
@@ -154,7 +154,7 @@ function ProductWindow() {
       >
         <aside className="hidden flex-col gap-1 border-r border-line p-3 text-[13px] md:flex">
           <p className="mb-3 flex items-center gap-2 px-1 text-[16px] font-semibold">
-            <ShelfMark size={18} /> ShelfIQ
+            <ShelfMark size={18} /> ShelfDekho
           </p>
           {nav.map(({ label, icon: Icon, active, badge }) => (
             <span
@@ -479,7 +479,7 @@ function Sales() {
           </Rise>
           <Rise>
             <p className={clsx(LEAD, "mt-5 max-w-[48ch]")}>
-              A headline number can mislead. {festival?.detail} ShelfIQ tells you that on the first line, instead of
+              A headline number can mislead. {festival?.detail} ShelfDekho tells you that on the first line, instead of
               leaving you to find it in a spreadsheet.
             </p>
           </Rise>
@@ -590,7 +590,7 @@ function Ask() {
 /** Why to trust the forecast, said in a retailer's words. */
 function Forecast() {
   const methods = [
-    ["ShelfIQ forecast", accuracy.wape_model],
+    ["ShelfDekho forecast", accuracy.wape_model],
     ["Average of the last 4 weeks", accuracy.wape_moving_avg],
     ["Same as last week", accuracy.wape_naive],
     ["Same week last year", accuracy.wape_seasonal_naive],
@@ -607,7 +607,7 @@ function Forecast() {
           </Rise>
           <Rise>
             <p className={clsx(LEAD, "mt-5 max-w-[48ch]")}>
-              Diwali moves every year and promotions change what sells. ShelfIQ plans around both, eight weeks ahead,
+              Diwali moves every year and promotions change what sells. ShelfDekho plans around both, eight weeks ahead,
               for every product in every store.
             </p>
           </Rise>
@@ -669,7 +669,7 @@ function Footer() {
   return (
     <footer className="flex flex-wrap items-center justify-between gap-4 bg-field px-4 pb-8 text-[13px] leading-[1.6] text-white/75 md:px-8">
       <p className="flex items-center gap-2 font-medium text-white">
-        <ShelfMark size={16} /> ShelfIQ
+        <ShelfMark size={16} /> ShelfDekho
       </p>
       <p>
         Photograph:{" "}

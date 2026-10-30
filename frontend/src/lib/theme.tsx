@@ -6,8 +6,8 @@ import { useEffect, useSyncExternalStore } from "react";
 
 export type ThemeChoice = "light" | "dark" | "system";
 
-const KEY = "shelfiq.theme";
-const EVENT = "shelfiq-theme";
+const KEY = "shelfdekho.theme";
+const EVENT = "shelfdekho-theme";
 
 /** Runs before first paint (see layout.tsx), so a dark-mode visitor never sees a white flash. */
 export const THEME_SCRIPT = `try{var c=localStorage.getItem("${KEY}");var d=c==="dark"||(c!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.dataset.theme=d?"dark":"light"}catch(e){document.documentElement.dataset.theme="light"}`;

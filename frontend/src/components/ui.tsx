@@ -225,7 +225,7 @@ export function Change({
 }
 
 /**
- * ShelfIQ's own element: days of stock cover drawn against the reorder lead time.
+ * ShelfDekho's own element: days of stock cover drawn against the reorder lead time.
  * The tick is the lead time; the bar turns red only when the shelf empties before a
  * reorder placed today could arrive.
  */

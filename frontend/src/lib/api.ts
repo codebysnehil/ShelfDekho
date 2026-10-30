@@ -28,7 +28,7 @@ export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:800
   "",
 );
 
-const TOKEN_KEY = "shelfiq.token";
+const TOKEN_KEY = "shelfdekho.token";
 
 export class ApiError extends Error {
   constructor(

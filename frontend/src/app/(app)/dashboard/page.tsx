@@ -327,7 +327,7 @@ function MoreDetail({
   );
 }
 
-/** ShelfIQ's map of the chain: revenue change for every store and category. */
+/** ShelfDekho's map of the chain: revenue change for every store and category. */
 function SalesMap({
   days,
   storeId,

@@ -119,7 +119,7 @@ export default function DataPage() {
     const url = URL.createObjectURL(new Blob([text], { type: "text/csv" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `shelfiq-sample-${kind}.csv`;
+    a.download = `shelfdekho-sample-${kind}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }

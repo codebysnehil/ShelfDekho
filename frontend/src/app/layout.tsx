@@ -19,9 +19,9 @@ const voice = IBM_Plex_Serif({
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ShelfIQ: know what runs out before it does",
+  title: "ShelfDekho: know what runs out before it does",
   description:
-    "ShelfIQ tells a grocery chain what sold, what will sell and what to reorder today, in every store, before the shelf is empty.",
+    "ShelfDekho tells a grocery chain what sold, what will sell and what to reorder today, in every store, before the shelf is empty.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

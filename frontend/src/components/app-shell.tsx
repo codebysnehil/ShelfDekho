@@ -57,7 +57,7 @@ function Sidebar() {
     <aside className="sticky top-0 hidden h-screen flex-col px-3 py-4 md:flex">
       <Link href="/" className="flex items-center gap-2 px-2 font-voice text-[19px] font-semibold tracking-[-0.01em]">
         <ShelfMark size={24} className="text-hue" />
-        ShelfIQ
+        ShelfDekho
       </Link>
       <div className="mt-5 px-1">
         <p className="mb-1 px-1 text-xs text-muted">Haat Retail</p>
@@ -107,7 +107,7 @@ function PhoneBars() {
     <>
       <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2 md:hidden">
         <Link href="/" className="flex items-center gap-1.5 font-voice font-semibold">
-          <ShelfMark size={20} className="text-hue" /> ShelfIQ
+          <ShelfMark size={20} className="text-hue" /> ShelfDekho
         </Link>
         <div className="flex min-w-0 items-center gap-1">
           <ThemeCycle className="text-muted" />

@@ -56,7 +56,7 @@ export function MovedBars({ rows }: { rows: { name: string; delta: number }[] })
   );
 }
 
-/** ShelfIQ's map of the chain: revenue change for every store and category. */
+/** ShelfDekho's map of the chain: revenue change for every store and category. */
 export function SalesTable({
   matrix,
   selected,

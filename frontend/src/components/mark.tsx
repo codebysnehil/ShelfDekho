@@ -1,4 +1,4 @@
-/** ShelfIQ's mark: three shelves, stocked to different levels. Drawn, not a letter in a box. */
+/** ShelfDekho's mark: three shelves, stocked to different levels. Drawn, not a letter in a box. */
 export function ShelfMark({ size = 24, className }: { size?: number; className?: string }) {
   return (
     <svg

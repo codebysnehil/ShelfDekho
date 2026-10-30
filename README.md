@@ -1,8 +1,8 @@
-# ShelfIQ
+# ShelfDekho
 
 **Retail analytics with promo- and festival-aware demand forecasting, stock-out alerts and an AI analyst that answers business questions with SQL.**
 
-**[Live demo](https://shelfiq.vercel.app)** · [API docs](https://shelfiq-api.onrender.com/docs) · no sign-up, one click
+**[Live demo](https://shelfdekho.vercel.app)** · [API docs](https://shelfiq-api.onrender.com/docs) · no sign-up, one click
 
 > The API runs on a free tier that sleeps when idle. The first visit can take up to a minute while it wakes; the app shows a banner while it does.
 
@@ -16,7 +16,7 @@ The public demo sets `DATA_WRITES_ENABLED=false` so every visitor sees the same 
 
 ## What it does
 
-A category manager at an 8-store Indian grocery chain opens ShelfIQ and sees:
+A category manager at an 8-store Indian grocery chain opens ShelfDekho and sees:
 
 | | |
 |---|---|
@@ -30,7 +30,7 @@ A category manager at an 8-store Indian grocery chain opens ShelfIQ and sees:
 
 | Method | WAPE |
 |---|---|
-| **ShelfIQ model** | **17.7%** |
+| **ShelfDekho model** | **17.7%** |
 | 4-week moving average | 19.8% |
 | Naive (last week) | 23.5% |
 | Seasonal naive (same week last year) | 26.3% |
@@ -116,50 +116,6 @@ The data is synthetic and deterministic (seed 42), so there are no licensing que
 - **Weekly pattern:** weekend peaks
 - **Promotions:** chain-wide promotions with category elasticities and a post-promo pantry-loading dip
 - **Planted stories for the analyst to find:** a competitor opening near Pune Baner in March 2026, fast growth at a new Hyderabad Express store, and supply-chain stock-outs
-
-## Design
-
-The interface was designed with the [taste-skill](https://github.com/Leonxlnx/taste-skill) Claude Code skill (installed in `.claude/skills/`), which deals a researched art direction and then checks the result in a real browser at 1440, 768 and 390 px.
-
-- **Overview:** headline figures that switch the chart, a breakdown of the rupee change vs last year, a store × category sales map, and what's coming up.
-- **Stock:** the shelf position at a glance, a sortable list, a stock runway for each shelf, and a map of where the risk sits.
-- **Analyst:** a workspace that opens on a worked answer, with its chart, table and SQL one click apart.
-- **App screens:** the "achromatic ledger" style. The chrome carries no colour, the one chart hue marks the main series (this year's revenue, the forecast), and red appears only where a shelf will run out. Each screen states its one finding under the title and puts its main job one click away ("Review 21 stock-outs", "Download reorder list").
-- **Signature element:** the *shelf cover bar*, days of stock drawn against the reorder lead time, which turns red only when the shelf empties before a reorder can arrive.
-- **Landing page:** opens on a kirana store with the real Overview rising out of it, then scrolls through what runs out, why sales moved, and asking why. Every figure comes from the dataset.
-- **Dark mode:** Light, Dark and System, remembered per browser, with its own tuned colours.
-- **Rulebook:** [`DESIGN.md`](DESIGN.md) records the colour jobs, components and do's and don'ts, in the format used by [awesome-design-md](https://github.com/VoltAgent/awesome-design-md), and `CLAUDE.md` imports it so future work stays consistent.
-- **Checks:** each screen went through three inspect, critique and fix rounds and ends with 0 failures. The remaining warnings are defended in `.taste-skill/notes.md`.
-
-The landing page renders from a snapshot of the real data, so it is instant while the free API sleeps. Refresh it after changing the dataset:
-
-```bash
-cd backend && uv run python -m app.jobs.snapshot ../frontend/src/lib/snapshot.json
-```
-
-The hero photograph is from Wikimedia Commons under CC BY-SA 3.0, credited in the page footer and in `frontend/public/photos/credits.json`. It does not show a ShelfIQ customer.
-
-## Run it locally
-
-You need Python 3.11+ with [uv](https://docs.astral.sh/uv/), Node 22, and Docker for Postgres.
-
-```bash
-docker compose up -d db redis
-```
-
-```bash
-cd backend && cp .env.example .env && uv sync && uv run alembic upgrade head && uv run python -m app.jobs.bootstrap && uv run uvicorn app.main:app --reload
-```
-
-```bash
-cd frontend && npm install && npm run dev
-```
-
-Open http://localhost:3000. Add `GROQ_API_KEY` (free at console.groq.com) to `backend/.env` to enable free-form AI questions; suggested questions work without it.
-
-```bash
-cd backend && uv run pytest
-```
 
 ## Deploy for free
 

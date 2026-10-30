@@ -36,7 +36,7 @@ export function ShelfSwatch({ status }: { status: string }) {
 }
 
 /**
- * ShelfIQ's own element: every product in every store, one mark each, laid out like the bays
+ * ShelfDekho's own element: every product in every store, one mark each, laid out like the bays
  * of a shop. A bad store reads as a row and a bad category as a column.
  */
 export function ShelfWall({

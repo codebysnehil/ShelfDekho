@@ -71,7 +71,7 @@ function downloadReorderList(rows: AlertRow[], asOf: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `shelfiq-reorder-${asOf}.csv`;
+  a.download = `shelfdekho-reorder-${asOf}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -679,7 +679,7 @@ function Accuracy() {
   const m = q.data;
   const rows = m
     ? [
-        { name: "ShelfIQ forecast", wape: m.wape_model, ours: true },
+        { name: "ShelfDekho forecast", wape: m.wape_model, ours: true },
         { name: "Average of the last 4 weeks", wape: m.wape_moving_avg },
         { name: "Same as last week", wape: m.wape_naive },
         ...(m.wape_seasonal_naive !== null
