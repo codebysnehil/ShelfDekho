@@ -1,0 +1,2466 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ShelfIQ API",
+    "description": "Retail analytics, demand forecasting and an AI SQL analyst.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Health",
+        "description": "Liveness probe. The frontend calls this on load to wake free-tier hosting.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/demo": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Demo Login",
+        "description": "One-click demo sign-in: returns a short-lived JWT for the demo analyst.",
+        "operationId": "demo_login_api_auth_demo_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/meta/stores": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "List Stores",
+        "operationId": "list_stores_api_meta_stores_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StoreOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Stores Api Meta Stores Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/meta/products": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "List Products",
+        "operationId": "list_products_api_meta_products_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProductOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Products Api Meta Products Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/dashboard/summary": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Summary",
+        "description": "Headline KPIs vs last year plus auto-generated insights.",
+        "operationId": "summary_api_dashboard_summary_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 364,
+              "minimum": 7,
+              "description": "Length of the period ending on the latest data date",
+              "default": 28,
+              "title": "Days"
+            },
+            "description": "Length of the period ending on the latest data date"
+          },
+          {
+            "name": "store_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Limit to one store; omit for the whole chain",
+              "title": "Store Id"
+            },
+            "description": "Limit to one store; omit for the whole chain"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/trend": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Trend",
+        "description": "Weekly revenue with the same week last year.",
+        "operationId": "trend_api_dashboard_trend_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "weeks",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 52,
+              "minimum": 4,
+              "default": 26,
+              "title": "Weeks"
+            }
+          },
+          {
+            "name": "store_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Limit to one store; omit for the whole chain",
+              "title": "Store Id"
+            },
+            "description": "Limit to one store; omit for the whole chain"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrendResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/breakdown": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Breakdown",
+        "operationId": "breakdown_api_dashboard_breakdown_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dimension",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "store",
+                "category"
+              ],
+              "type": "string",
+              "default": "category",
+              "title": "Dimension"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 364,
+              "minimum": 7,
+              "description": "Length of the period ending on the latest data date",
+              "default": 28,
+              "title": "Days"
+            },
+            "description": "Length of the period ending on the latest data date"
+          },
+          {
+            "name": "store_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Limit to one store; omit for the whole chain",
+              "title": "Store Id"
+            },
+            "description": "Limit to one store; omit for the whole chain"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BreakdownResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/matrix": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Matrix",
+        "description": "Revenue change vs last year for every store x category.",
+        "operationId": "matrix_api_dashboard_matrix_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 364,
+              "minimum": 7,
+              "description": "Length of the period ending on the latest data date",
+              "default": 28,
+              "title": "Days"
+            },
+            "description": "Length of the period ending on the latest data date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatrixResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/upcoming": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Upcoming",
+        "description": "The next festival and the promotions starting in the coming days.",
+        "operationId": "upcoming_api_dashboard_upcoming_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 56,
+              "minimum": 1,
+              "default": 14,
+              "title": "Days"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 20,
+              "minimum": 1,
+              "default": 6,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpcomingResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/products": {
+      "get": {
+        "tags": [
+          "dashboard"
+        ],
+        "summary": "Products",
+        "operationId": "products_api_dashboard_products_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "top",
+                "declining"
+              ],
+              "type": "string",
+              "default": "top",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 364,
+              "minimum": 7,
+              "description": "Length of the period ending on the latest data date",
+              "default": 28,
+              "title": "Days"
+            },
+            "description": "Length of the period ending on the latest data date"
+          },
+          {
+            "name": "store_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Limit to one store; omit for the whole chain",
+              "title": "Store Id"
+            },
+            "description": "Limit to one store; omit for the whole chain"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/forecast/metrics": {
+      "get": {
+        "tags": [
+          "forecast"
+        ],
+        "summary": "Metrics",
+        "description": "Backtest accuracy of the latest forecast run against naive baselines.",
+        "operationId": "metrics_api_forecast_metrics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastMetrics"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/forecast/alerts": {
+      "get": {
+        "tags": [
+          "forecast"
+        ],
+        "summary": "Alerts",
+        "description": "Store x SKU stock health from on-hand inventory and next week's forecast.",
+        "operationId": "alerts_api_forecast_alerts_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "stockout_risk",
+                "overstock",
+                "healthy",
+                "all"
+              ],
+              "type": "string",
+              "default": "stockout_risk",
+              "title": "Status"
+            }
+          },
+          {
+            "name": "store_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 400,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/forecast/series": {
+      "get": {
+        "tags": [
+          "forecast"
+        ],
+        "summary": "Series",
+        "description": "Weekly actuals followed by the forecast with an 80% interval.",
+        "operationId": "series_api_forecast_series_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "store_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Store Id"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "history_weeks",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 104,
+              "minimum": 4,
+              "default": 26,
+              "title": "History Weeks"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastSeries"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analyst/suggestions": {
+      "get": {
+        "tags": [
+          "analyst"
+        ],
+        "summary": "Suggestions",
+        "operationId": "suggestions_api_analyst_suggestions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuggestionsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/analyst/quota": {
+      "get": {
+        "tags": [
+          "analyst"
+        ],
+        "summary": "Quota",
+        "operationId": "quota_api_analyst_quota_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quota"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/analyst/ask": {
+      "post": {
+        "tags": [
+          "analyst"
+        ],
+        "summary": "Ask",
+        "description": "Answer a business question with SQL, a chart and a short written answer.\n\nCached answers and suggested questions do not count against the quota.",
+        "operationId": "ask_api_analyst_ask_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Server-sent events: status, sql, table, chart, answer, error, done.",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/event-stream": {}
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/data/status": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Data Status",
+        "operationId": "data_status_api_data_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataStatus"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/data/sample/{kind}": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Sample",
+        "operationId": "sample_api_data_sample__kind__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "sales",
+                "stock"
+              ],
+              "type": "string",
+              "title": "Kind"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/data/check": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Check",
+        "description": "Read a file and say what it would do. Changes nothing.",
+        "operationId": "check_api_data_check_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "sales",
+                "stock"
+              ],
+              "type": "string",
+              "title": "Kind"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/data/import": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Import File",
+        "description": "Save a file's good rows, move stock on, and recalculate every forecast.",
+        "operationId": "import_file_api_data_import_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                "sales",
+                "stock"
+              ],
+              "type": "string",
+              "title": "Kind"
+            }
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 200,
+              "default": "upload.csv",
+              "title": "Filename"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AlertCounts": {
+        "properties": {
+          "stockout_risk": {
+            "type": "integer",
+            "title": "Stockout Risk"
+          },
+          "overstock": {
+            "type": "integer",
+            "title": "Overstock"
+          },
+          "healthy": {
+            "type": "integer",
+            "title": "Healthy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stockout_risk",
+          "overstock",
+          "healthy"
+        ],
+        "title": "AlertCounts"
+      },
+      "AlertRow": {
+        "properties": {
+          "store_id": {
+            "type": "integer",
+            "title": "Store Id"
+          },
+          "store_name": {
+            "type": "string",
+            "title": "Store Name"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "sku": {
+            "type": "string",
+            "title": "Sku"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "on_hand": {
+            "type": "integer",
+            "title": "On Hand"
+          },
+          "daily_demand": {
+            "type": "number",
+            "title": "Daily Demand"
+          },
+          "days_of_cover": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days Of Cover"
+          },
+          "lead_time_days": {
+            "type": "integer",
+            "title": "Lead Time Days"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "stockout_risk",
+              "overstock",
+              "healthy"
+            ],
+            "title": "Status"
+          },
+          "revenue_at_risk": {
+            "type": "number",
+            "title": "Revenue At Risk"
+          },
+          "unit_price": {
+            "type": "number",
+            "title": "Unit Price"
+          }
+        },
+        "type": "object",
+        "required": [
+          "store_id",
+          "store_name",
+          "product_id",
+          "sku",
+          "product_name",
+          "category",
+          "on_hand",
+          "daily_demand",
+          "days_of_cover",
+          "lead_time_days",
+          "status",
+          "revenue_at_risk",
+          "unit_price"
+        ],
+        "title": "AlertRow"
+      },
+      "AlertsResponse": {
+        "properties": {
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/AlertCounts"
+          },
+          "revenue_at_risk": {
+            "type": "number",
+            "title": "Revenue At Risk"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/AlertRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "as_of",
+          "counts",
+          "revenue_at_risk",
+          "rows"
+        ],
+        "title": "AlertsResponse"
+      },
+      "AskRequest": {
+        "properties": {
+          "question": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 3,
+            "title": "Question"
+          }
+        },
+        "type": "object",
+        "required": [
+          "question"
+        ],
+        "title": "AskRequest"
+      },
+      "BreakdownResponse": {
+        "properties": {
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "store",
+              "category"
+            ],
+            "title": "Dimension"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/BreakdownRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "dimension",
+          "rows"
+        ],
+        "title": "BreakdownResponse"
+      },
+      "BreakdownRow": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "revenue": {
+            "type": "number",
+            "title": "Revenue"
+          },
+          "revenue_ly": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revenue Ly"
+          },
+          "yoy_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yoy Pct"
+          },
+          "margin_pct": {
+            "type": "number",
+            "title": "Margin Pct"
+          },
+          "share_pct": {
+            "type": "number",
+            "title": "Share Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "revenue",
+          "revenue_ly",
+          "yoy_pct",
+          "margin_pct",
+          "share_pct"
+        ],
+        "title": "BreakdownRow"
+      },
+      "ChartEvent": {
+        "properties": {
+          "week_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Week Start"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "week_start",
+          "label"
+        ],
+        "title": "ChartEvent"
+      },
+      "DataStatus": {
+        "properties": {
+          "sales_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sales To"
+          },
+          "stock_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stock To"
+          },
+          "stores": {
+            "type": "integer",
+            "title": "Stores"
+          },
+          "products": {
+            "type": "integer",
+            "title": "Products"
+          },
+          "can_add": {
+            "type": "boolean",
+            "title": "Can Add"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/ImportRecord"
+            },
+            "type": "array",
+            "title": "History"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sales_to",
+          "stock_to",
+          "stores",
+          "products",
+          "can_add",
+          "history"
+        ],
+        "title": "DataStatus"
+      },
+      "DemoUser": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "role"
+        ],
+        "title": "DemoUser"
+      },
+      "ForecastMetrics": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "series_count": {
+            "type": "integer",
+            "title": "Series Count"
+          },
+          "horizon_weeks": {
+            "type": "integer",
+            "title": "Horizon Weeks"
+          },
+          "backtest_weeks": {
+            "type": "integer",
+            "title": "Backtest Weeks"
+          },
+          "wape_model": {
+            "type": "number",
+            "title": "Wape Model"
+          },
+          "wape_naive": {
+            "type": "number",
+            "title": "Wape Naive"
+          },
+          "wape_seasonal_naive": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wape Seasonal Naive"
+          },
+          "wape_moving_avg": {
+            "type": "number",
+            "title": "Wape Moving Avg"
+          },
+          "best_baseline": {
+            "type": "string",
+            "title": "Best Baseline"
+          },
+          "improvement_pct": {
+            "type": "number",
+            "title": "Improvement Pct",
+            "description": "WAPE reduction vs the best baseline, in %"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created_at",
+          "series_count",
+          "horizon_weeks",
+          "backtest_weeks",
+          "wape_model",
+          "wape_naive",
+          "wape_seasonal_naive",
+          "wape_moving_avg",
+          "best_baseline",
+          "improvement_pct"
+        ],
+        "title": "ForecastMetrics"
+      },
+      "ForecastPoint": {
+        "properties": {
+          "week_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Week Start"
+          },
+          "actual": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual"
+          },
+          "forecast": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forecast"
+          },
+          "lower": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower"
+          },
+          "upper": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper"
+          },
+          "on_promo": {
+            "type": "boolean",
+            "title": "On Promo"
+          }
+        },
+        "type": "object",
+        "required": [
+          "week_start",
+          "actual",
+          "forecast",
+          "lower",
+          "upper",
+          "on_promo"
+        ],
+        "title": "ForecastPoint"
+      },
+      "ForecastSeries": {
+        "properties": {
+          "store": {
+            "$ref": "#/components/schemas/StoreOut"
+          },
+          "product": {
+            "$ref": "#/components/schemas/ProductOut"
+          },
+          "on_hand": {
+            "type": "integer",
+            "title": "On Hand"
+          },
+          "days_of_cover": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days Of Cover"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "stockout_risk",
+              "overstock",
+              "healthy"
+            ],
+            "title": "Status"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/ForecastPoint"
+            },
+            "type": "array",
+            "title": "Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "store",
+          "product",
+          "on_hand",
+          "days_of_cover",
+          "status",
+          "points"
+        ],
+        "title": "ForecastSeries"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "degraded"
+            ],
+            "title": "Status"
+          },
+          "database": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "unavailable"
+            ],
+            "title": "Database"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "database",
+          "version"
+        ],
+        "title": "HealthResponse"
+      },
+      "ImportIssue": {
+        "properties": {
+          "line": {
+            "type": "integer",
+            "title": "Line"
+          },
+          "problem": {
+            "type": "string",
+            "title": "Problem"
+          }
+        },
+        "type": "object",
+        "required": [
+          "line",
+          "problem"
+        ],
+        "title": "ImportIssue"
+      },
+      "ImportRecord": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "rows_added": {
+            "type": "integer",
+            "title": "Rows Added"
+          },
+          "date_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date From"
+          },
+          "date_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date To"
+          }
+        },
+        "type": "object",
+        "required": [
+          "created_at",
+          "kind",
+          "filename",
+          "rows_added",
+          "date_from",
+          "date_to"
+        ],
+        "title": "ImportRecord"
+      },
+      "ImportReport": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "rows_ok": {
+            "type": "integer",
+            "title": "Rows Ok"
+          },
+          "rows_rejected": {
+            "type": "integer",
+            "title": "Rows Rejected"
+          },
+          "rows_replacing": {
+            "type": "integer",
+            "title": "Rows Replacing"
+          },
+          "date_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date From"
+          },
+          "date_to": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date To"
+          },
+          "stores": {
+            "type": "integer",
+            "title": "Stores"
+          },
+          "products": {
+            "type": "integer",
+            "title": "Products"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ImportIssue"
+            },
+            "type": "array",
+            "title": "Issues"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "rows_ok",
+          "rows_rejected",
+          "rows_replacing",
+          "date_from",
+          "date_to",
+          "stores",
+          "products",
+          "issues"
+        ],
+        "title": "ImportReport"
+      },
+      "ImportResult": {
+        "properties": {
+          "report": {
+            "$ref": "#/components/schemas/ImportReport"
+          }
+        },
+        "type": "object",
+        "required": [
+          "report"
+        ],
+        "title": "ImportResult"
+      },
+      "Insight": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "tone": {
+            "type": "string",
+            "enum": [
+              "positive",
+              "negative",
+              "neutral"
+            ],
+            "title": "Tone"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "tone",
+          "title",
+          "detail"
+        ],
+        "title": "Insight"
+      },
+      "Kpi": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "value": {
+            "type": "number",
+            "title": "Value"
+          },
+          "previous": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous"
+          },
+          "change_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change Pct"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "inr",
+              "units",
+              "pct"
+            ],
+            "title": "Unit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "value",
+          "previous",
+          "change_pct",
+          "unit"
+        ],
+        "title": "Kpi"
+      },
+      "MatrixCell": {
+        "properties": {
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "revenue": {
+            "type": "number",
+            "title": "Revenue"
+          },
+          "yoy_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yoy Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "revenue",
+          "yoy_pct"
+        ],
+        "title": "MatrixCell"
+      },
+      "MatrixResponse": {
+        "properties": {
+          "categories": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Categories"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/MatrixRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "categories",
+          "rows"
+        ],
+        "title": "MatrixResponse"
+      },
+      "MatrixRow": {
+        "properties": {
+          "store_id": {
+            "type": "integer",
+            "title": "Store Id"
+          },
+          "store": {
+            "type": "string",
+            "title": "Store"
+          },
+          "revenue": {
+            "type": "number",
+            "title": "Revenue"
+          },
+          "yoy_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yoy Pct"
+          },
+          "cells": {
+            "items": {
+              "$ref": "#/components/schemas/MatrixCell"
+            },
+            "type": "array",
+            "title": "Cells"
+          }
+        },
+        "type": "object",
+        "required": [
+          "store_id",
+          "store",
+          "revenue",
+          "yoy_pct",
+          "cells"
+        ],
+        "title": "MatrixRow"
+      },
+      "ProductOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "sku": {
+            "type": "string",
+            "title": "Sku"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "unit_price": {
+            "type": "number",
+            "title": "Unit Price"
+          },
+          "lead_time_days": {
+            "type": "integer",
+            "title": "Lead Time Days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "sku",
+          "name",
+          "category",
+          "unit_price",
+          "lead_time_days"
+        ],
+        "title": "ProductOut"
+      },
+      "ProductRow": {
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "sku": {
+            "type": "string",
+            "title": "Sku"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "revenue": {
+            "type": "number",
+            "title": "Revenue"
+          },
+          "units": {
+            "type": "integer",
+            "title": "Units"
+          },
+          "yoy_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yoy Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "sku",
+          "name",
+          "category",
+          "revenue",
+          "units",
+          "yoy_pct"
+        ],
+        "title": "ProductRow"
+      },
+      "ProductsResponse": {
+        "properties": {
+          "sort": {
+            "type": "string",
+            "enum": [
+              "top",
+              "declining"
+            ],
+            "title": "Sort"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ProductRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sort",
+          "rows"
+        ],
+        "title": "ProductsResponse"
+      },
+      "Quota": {
+        "properties": {
+          "limit_per_day": {
+            "type": "integer",
+            "title": "Limit Per Day"
+          },
+          "remaining_today": {
+            "type": "integer",
+            "title": "Remaining Today"
+          },
+          "limit_per_minute": {
+            "type": "integer",
+            "title": "Limit Per Minute"
+          },
+          "llm_configured": {
+            "type": "boolean",
+            "title": "Llm Configured"
+          }
+        },
+        "type": "object",
+        "required": [
+          "limit_per_day",
+          "remaining_today",
+          "limit_per_minute",
+          "llm_configured"
+        ],
+        "title": "Quota"
+      },
+      "StoreOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "city",
+          "region",
+          "format"
+        ],
+        "title": "StoreOut"
+      },
+      "Suggestion": {
+        "properties": {
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "shows": {
+            "type": "string",
+            "title": "Shows",
+            "description": "What the answer's chart shows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "question",
+          "shows"
+        ],
+        "title": "Suggestion"
+      },
+      "SuggestionsResponse": {
+        "properties": {
+          "suggestions": {
+            "items": {
+              "$ref": "#/components/schemas/Suggestion"
+            },
+            "type": "array",
+            "title": "Suggestions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "suggestions"
+        ],
+        "title": "SuggestionsResponse"
+      },
+      "SummaryResponse": {
+        "properties": {
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Period Start"
+          },
+          "period_days": {
+            "type": "integer",
+            "title": "Period Days"
+          },
+          "kpis": {
+            "items": {
+              "$ref": "#/components/schemas/Kpi"
+            },
+            "type": "array",
+            "title": "Kpis"
+          },
+          "insights": {
+            "items": {
+              "$ref": "#/components/schemas/Insight"
+            },
+            "type": "array",
+            "title": "Insights"
+          }
+        },
+        "type": "object",
+        "required": [
+          "as_of",
+          "period_start",
+          "period_days",
+          "kpis",
+          "insights"
+        ],
+        "title": "SummaryResponse"
+      },
+      "TokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "const": "bearer",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          },
+          "user": {
+            "$ref": "#/components/schemas/DemoUser"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in",
+          "user"
+        ],
+        "title": "TokenResponse"
+      },
+      "TrendPoint": {
+        "properties": {
+          "week_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Week Start"
+          },
+          "revenue": {
+            "type": "number",
+            "title": "Revenue"
+          },
+          "revenue_ly": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revenue Ly"
+          },
+          "units": {
+            "type": "integer",
+            "title": "Units"
+          },
+          "units_ly": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Units Ly"
+          },
+          "margin_pct": {
+            "type": "number",
+            "title": "Margin Pct"
+          },
+          "margin_pct_ly": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Margin Pct Ly"
+          },
+          "promo_pct": {
+            "type": "number",
+            "title": "Promo Pct"
+          },
+          "promo_pct_ly": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Promo Pct Ly"
+          }
+        },
+        "type": "object",
+        "required": [
+          "week_start",
+          "revenue",
+          "revenue_ly",
+          "units",
+          "units_ly",
+          "margin_pct",
+          "margin_pct_ly",
+          "promo_pct",
+          "promo_pct_ly"
+        ],
+        "title": "TrendPoint"
+      },
+      "TrendResponse": {
+        "properties": {
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPoint"
+            },
+            "type": "array",
+            "title": "Points"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/ChartEvent"
+            },
+            "type": "array",
+            "title": "Events",
+            "description": "Festival weeks to annotate on the chart"
+          }
+        },
+        "type": "object",
+        "required": [
+          "points",
+          "events"
+        ],
+        "title": "TrendResponse"
+      },
+      "UpcomingPromotion": {
+        "properties": {
+          "product": {
+            "type": "string",
+            "title": "Product"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "title": "End Date"
+          },
+          "discount_pct": {
+            "type": "number",
+            "title": "Discount Pct"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product",
+          "category",
+          "start_date",
+          "end_date",
+          "discount_pct"
+        ],
+        "title": "UpcomingPromotion"
+      },
+      "UpcomingResponse": {
+        "properties": {
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "title": "As Of"
+          },
+          "festival": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Festival"
+          },
+          "festival_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Festival Date"
+          },
+          "days_to_festival": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Days To Festival"
+          },
+          "promotions": {
+            "items": {
+              "$ref": "#/components/schemas/UpcomingPromotion"
+            },
+            "type": "array",
+            "title": "Promotions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "as_of",
+          "festival",
+          "festival_date",
+          "days_to_festival",
+          "promotions"
+        ],
+        "title": "UpcomingResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

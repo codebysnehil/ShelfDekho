@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+/* Peacock ledger (taste-skill app style accent-ladder, on ShelfIQ's own world). Peacock, the
+   blue-green of shop shutters and ledger covers, marks the main data and the one primary action;
+   its pale tint is the active row; one deep field holds the shelf wall. A framed sheet gives the
+   shell its depth. Red and marigold only ever mean a shelf's state. */
+:root {
+  color-scheme: light;
+  --frame: #e8ebe4;
+  --ground: #f7f8f5;
+  --surface: #ffffff;
+  --raised: #eceee8;
+  --active: #d9eae8;
+  --active-ink: #0b4650;
+  --hover: #f5f7f2;
+  --status-order: #d98f0b;
+  --border: #e2e5de;
+  --rule: #edefe9;
+  --control: #cbd0c7;
+  --text: #0f1c1c;
+  --muted: #56635f;
+  --primary: #0e4f5a;
+  --primary-ink: #ffffff;
+  --primary-hover: #0a3e47;
+  --raised-hover: #e0e3dc;
+  --field: #141414;
+  --field-raised: #242424;
+  --field-hover: #2e2e2e;
+  --hue-field: #0e4f5a;
+  --hue: #0f7480; /* the one chart hue: this year's revenue, the forecast */
+  --comparison: #8d948e; /* last year, baselines */
+  --positive: #1f7a4d;
+  --negative: #c4242a;
+  --grid: #e6e8e3;
+  --pill-positive-bg: #dcf5e6;
+  --pill-positive-ink: #06331d;
+  --pill-negative-bg: #ffe9e6;
+  --pill-negative-ink: #831c1e;
+  --pill-neutral-bg: #eceee8;
+  --pill-neutral-ink: #3a4441;
+  --heat-up: 15, 116, 128;
+  --heat-down: 196, 36, 42;
+  --selection: #cfe6e6;
+  /* The shelf wall's field: much the same in both themes. */
+  --band: #0d3a43;
+  --band-raised: #164c56;
+  --band-ink: #f3f8f7;
+  --band-muted: #b5cfd0;
+  --shelf-ok: rgba(255, 255, 255, 0.2);
+  --shelf-over: #f4b63f;
+  --shelf-risk: #ff6f61;
+}
+
+/* Dark is its own set of steps, not an inversion: depth by lightness, and the data colours
+   lifted so they keep their contrast. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --frame: #0a0d0c;
+  --ground: #101413;
+  --surface: #181d1c;
+  --raised: #262c2a;
+  --active: #1b3a3d;
+  --active-ink: #bfe7e8;
+  --hover: #1f2523;
+  --border: #29302e;
+  --rule: #222826;
+  --control: #47504d;
+  --text: #eef2f0;
+  --muted: #a5b0ac;
+  --primary: #5cc5cd;
+  --primary-ink: #07262a;
+  --primary-hover: #7ad3d9;
+  --raised-hover: #323937;
+  --field: #000000;
+  --field-raised: #1c1c1b;
+  --field-hover: #262625;
+  --hue-field: #0e4f5a;
+  --hue: #5cc5cd;
+  --comparison: #868e89;
+  --positive: #57c07a;
+  --negative: #f4777a;
+  --grid: #2a312f;
+  --pill-positive-bg: #17291d;
+  --pill-positive-ink: #57c07a;
+  --pill-negative-bg: #341a1c;
+  --pill-negative-ink: #f4777a;
+  --pill-neutral-bg: #262c2a;
+  --pill-neutral-ink: #d3d9d6;
+  --heat-up: 92, 197, 205;
+  --heat-down: 238, 92, 96;
+  --selection: #1f4a50;
+  --band: #0f3940;
+  --band-raised: #1a4c54;
+}
+
+@theme inline {
+  --color-frame: var(--frame);
+  --color-band: var(--band);
+  --color-band-raised: var(--band-raised);
+  --color-band-ink: var(--band-ink);
+  --color-band-muted: var(--band-muted);
+  --color-active-ink: var(--active-ink);
+  --radius-lg: 14px;
+  --radius-md: 8px;
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-active: var(--active);
+  --color-hover: var(--hover);
+  --color-line: var(--border);
+  --color-rule: var(--rule);
+  --color-control: var(--control);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-hover: var(--primary-hover);
+  --color-raised-hover: var(--raised-hover);
+  --color-field: var(--field);
+  --color-field-raised: var(--field-raised);
+  --color-field-hover: var(--field-hover);
+  --color-hue-field: var(--hue-field);
+  --color-hue: var(--hue);
+  --color-comparison: var(--comparison);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-pill-negative-bg: var(--pill-negative-bg);
+  --color-pill-negative-ink: var(--pill-negative-ink);
+  --color-pill-positive-bg: var(--pill-positive-bg);
+  --color-pill-positive-ink: var(--pill-positive-ink);
+  --color-pill-neutral-bg: var(--pill-neutral-bg);
+  --color-pill-neutral-ink: var(--pill-neutral-ink);
+  --font-sans: var(--font-ui), Inter, system-ui, sans-serif;
+  --font-voice: var(--font-voice-face), Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html,
+body {
+  transition: background-color 0.15s ease;
+}
+
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.43;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+/* Section entrances, tied to scroll position: no script, no state to get stuck. Anything
+   already in view is fully shown, and unsupported browsers show the content as normal. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rise {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
+.pop {
+  animation: pop 0.12s ease-out;
+  transform-origin: top;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop,
+  .drift,
+  .wall-cell {
+    animation: none;
+  }
+}
+
+/* The wall of shelves fills in across the first screen, column by column. */
+.wall-cell {
+  animation: wall 0.5s ease-out both;
+  animation-delay: calc(var(--col) * 14ms);
+}
+
+/* The hero photograph settles slowly, then holds still. */
+.drift {
+  /* Anchored at the foot of the photograph, so the shop's own signage stays out of frame. */
+  --zoom: 1.5;
+  transform: scale(var(--zoom));
+  transform-origin: 50% 100%;
+  animation: drift 14s ease-out both;
+}
+
+@media (min-width: 768px) {
+  .drift {
+    --zoom: 1.24;
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: scale(calc(var(--zoom) + 0.06));
+  }
+  to {
+    transform: scale(var(--zoom));
+  }
+}
+
+@keyframes wall {
+  from {
+    opacity: 0.1;
+    transform: scale(0.6);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0.15;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--hue);
+  outline-offset: 2px;
+}
