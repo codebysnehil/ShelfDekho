@@ -1,0 +1,30 @@
+# Render blueprint for the API (free plan). Postgres lives on Neon, Redis on Upstash.
+# Render: New > Blueprint > pick this repo, then fill in the "sync: false" values.
+services:
+  - type: web
+    name: shelfiq-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL # Neon connection string (direct, not "-pooler")
+        sync: false
+      - key: ANALYST_DATABASE_URL # optional read-only role, see backend/sql/readonly_role.sql
+        sync: false
+      - key: REDIS_URL # optional, Upstash rediss:// URL for durable rate limits
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS # your Vercel URL, e.g. https://shelfiq.vercel.app
+        sync: false
+      - key: CORS_ORIGIN_REGEX # optional, e.g. https://shelfiq-.*\.vercel\.app
+        sync: false
+      - key: DATA_WRITES_ENABLED # the public demo keeps one set of figures
+        value: "false"
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

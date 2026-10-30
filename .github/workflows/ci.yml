@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: shelfiq
+          POSTGRES_PASSWORD: shelfiq
+          POSTGRES_DB: shelfiq
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U shelfiq" --health-interval 2s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://shelfiq:shelfiq@localhost:5432/shelfiq
+      TEST_DATABASE_URL: postgresql+asyncpg://shelfiq:shelfiq@localhost:5432/shelfiq_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.22"
+      - run: uv sync --frozen --python 3.12
+      - name: Lint
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Migrations apply cleanly
+        run: uv run alembic upgrade head
+      - name: Create test database
+        run: PGPASSWORD=shelfiq psql -h localhost -U shelfiq -c "CREATE DATABASE shelfiq_test"
+      - name: Tests
+        run: uv run pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.22"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - name: API contract is in sync
+        # Regenerate the OpenAPI schema and TS types; fail if anything changed.
+        run: |
+          cd backend && uv sync --frozen --python 3.12 && uv run python -m app.export_openapi ../frontend/openapi.json
+          cd ../frontend && npm run gen:types
+          git diff --exit-code -- openapi.json src/lib/api-types.ts
+      - name: Lint, typecheck, build
+        working-directory: frontend
+        run: |
+          npx eslint src
+          npm run typecheck
+          npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t shelfiq-api backend

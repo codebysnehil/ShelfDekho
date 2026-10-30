@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+.env
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.vercel
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+
+# taste-skill working files (screenshots, sheets)
+.taste-skill/

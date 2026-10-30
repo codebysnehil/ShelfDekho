@@ -1,0 +1,41 @@
+# Local development stack: Postgres + Redis + the API.
+#   docker compose up -d db redis     # just the services, run the API with uv
+#   docker compose up --build         # everything in containers
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: shelfiq
+      POSTGRES_PASSWORD: shelfiq
+      POSTGRES_DB: shelfiq
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/sql/init-test-db.sql:/docker-entrypoint-initdb.d/01-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shelfiq"]
+      interval: 2s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://shelfiq:shelfiq@db:5432/shelfiq
+      REDIS_URL: redis://redis:6379/0
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
